@@ -1,0 +1,83 @@
+image: node:lts-slim
+
+cache:
+  untracked: true
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - node_modules
+
+stages:
+  - test
+  - build
+  - deploy
+
+test:
+  tags:
+    - node-runner-1
+    - node-runner-2
+  stage: test
+  only:
+    - dev
+    - master
+  artifacts:
+    untracked: true
+    when: on_failure
+  script:
+    - yarn install --forzen-lockfile
+    - yarn test
+
+build-staging:
+  tags:
+    - node-runner-1
+    - node-runner-2
+  stage: build
+  only:
+    - dev
+  artifacts:
+    untracked: true
+    when: on_failure
+  script:
+    - mv .env.staging .env
+    - yarn build
+
+build-production:
+  tags:
+    - node-runner-1
+    - node-runner-2
+  stage: build
+  only:
+    - master
+  artifacts:
+    untracked: true
+    when: on_failure
+  script:
+    - mv .env.production .env
+    - yarn build
+
+deploy-staging:
+  tags:
+    - node-runner-1
+    - node-runner-2
+  stage: build
+  only:
+    - dev
+  artifacts:
+    untracked: true
+    when: on_failure
+  script:
+    - mv .env.production .env
+    - echo "do something"
+
+deploy-production:
+  tags:
+    - node-runner-1
+    - node-runner-2
+  stage: build
+  only:
+    - master
+  artifacts:
+    untracked: true
+    when: on_failure
+  script:
+    - mv .env.production .env
+    - echo "do something"
