@@ -22,3 +22,7 @@
 - Update project name, description and version on `package.json`
 
 3. Remove extra stuff you might not need like `services/api`
+
+## tsconfig options
+
+React overwrites `tsconfig.json` on start, if you wanna change a project specific config, use `tsconfig.overwriter.json`
